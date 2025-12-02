@@ -133,3 +133,43 @@ O objetivo principal é prever uma variável de saída **categórica** ou **disc
 | **Árvore** | **Árvores de Decisão** | Cria regras de decisão sequenciais. |
 | **Ensemble** | **Random Forest (Classificação)** | Votação de múltiplas Árvores de Decisão para a classificação final. |
 | **Ensemble** | **Gradient Boosting Machines (GBM)** | Constrói preditores sequencialmente para alta precisão. |
+
+### ⚖️ Estratégia de Mitigação de Desbalanceamento (Custo)
+
+O dataset `PimaIndiansDiabetes` apresentou um **desbalanceamento de 65% (Nao_Diabete) vs. 35% (Diabete)**. Para garantir que o modelo não ignorasse a classe minoritária crítica (`Diabete`), o treinamento da Regressão Logística foi realizado em duas etapas de comparação:
+
+1.  **Modelo Baseline:** Sem ajustes de peso.
+2.  **Modelo Otimizado (Mitigação):** Treinado usando **pesos de classes inversamente proporcionais** às frequências, penalizando os erros na classe `Diabete`.
+
+#### Análise do Impacto da Mitigação (Validação Cruzada)
+
+| Métrica (Média CV) | Baseline (Sem Ajuste) | Otimizado (Com Ajuste de Peso) | Conclusão Estratégica |
+| :--- | :--- | :--- | :--- |
+| **ROC (AUC)** | $0.8392$ | $\mathbf{0.8396}$ | O poder discriminatório foi mantido. |
+| **Sensibilidade (Recall) [Diabete]** | $\mathbf{0.8752}$ | $0.7857$ | **Diminuição:** Indica que o Baseline estava com **Falsos Positivos excessivos** (Especificidade muito baixa). |
+| **Especificidade [Nao\_Diabete]** | $0.5553$ | $\mathbf{0.7058}$ | **Melhoria Crítica:** A Especificidade aumentou em **15 pontos percentuais**, resultando em menos Falsos Positivos no teste. |
+
+**Conclusão:** O **Modelo Otimizado** foi selecionado, pois alcançou um **equilíbrio** mais realista entre as classes e reduziu o alto viés de Falso Positivo.
+
+---
+
+### 🎯 Resultados Finais: Regressão Logística Otimizada (Conjunto de Teste)
+
+O modelo otimizado foi avaliado em um conjunto de dados de Teste (não visto) para confirmar sua capacidade de generalização.
+
+#### Matriz de Confusão
+
+O resultado da Matriz de Confusão no Conjunto de Teste (70/30) é:
+
+#### Métricas de Desempenho
+
+| Métrica | Valor (Teste) | Análise / Interpretação |
+| :--- | :--- | :--- |
+| **AUC** | $\mathbf{0.8208}$ | **Forte Desempenho:** O modelo possui um bom poder de discriminação no conjunto não visto. |
+| **Acurácia** | $0.7261$ | A taxa de acerto geral é de 72.61%. |
+| **Sensibilidade (Recall)** | $0.7000$ | (Relativo à classe 'Nao\_Diabete' - Padrão do caret). |
+| **Especificidade** | $0.7750$ | (Relativo à classe 'Diabete' - Padrão do caret). |
+| **Recall (Diabete)** | $\mathbf{0.7750}$ | **Recálculo Crucial:** O modelo identificou corretamente **77.50%** dos pacientes que realmente têm diabetes ($62 / (62 + 18)$). |
+| **Balanced Accuracy** | $\mathbf{0.7375}$ | A acurácia ajustada para o desbalanceamento das classes. |
+
+**Conclusão da Avaliação:** O modelo final apresenta um bom equilíbrio de desempenho ($\text{AUC} > 0.80$) e conseguiu identificar quase **$78\%$** dos casos reais de diabetes (Recall da classe minoritária), sendo um excelente *baseline* para a comparação com os próximos modelos (KNN, SVM, etc.).
