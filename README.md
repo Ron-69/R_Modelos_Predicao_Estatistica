@@ -22,6 +22,42 @@ O objetivo principal é prever uma variável de saída **contínua** ou **quanti
 | **Distância** | **K-Nearest Neighbors (KNN Regressão)** | Prevê o valor como a média dos $K$ vizinhos mais próximos. |
 
 ---
+## ⚖️ Análise Comparativa dos Modelos de Regressão Base
+
+A transição da Regressão Linear Simples para a Múltipla ilustra como a inclusão de *features* adicionais (como Horsepower, `hp`) altera a interpretação e a precisão do modelo, especialmente devido à **multicolinearidade** existente entre as variáveis.
+
+### Comparativo de Métricas (MPG vs. Peso e HP)
+
+| Métrica | Simples (`mpg ~ wt`) | Múltiplo (`mpg ~ wt + hp`) | Interpretação da Mudança |
+| :--- | :--- | :--- | :--- |
+| **R-quadrado Ajustado** | 0.7446 | **0.8148** | **Melhoria de Ajuste:** O modelo múltiplo explica cerca de **7% a mais** da variância em MPG. |
+| **RSE (Erro Residual)** | 3.046 | **2.593** | **Aumento da Precisão:** O erro médio de previsão caiu em $\approx 0.45$ unidades, tornando o modelo mais preciso. |
+| **Coeficiente do Peso (`wt`)** | **-5.3445** | **-3.87783** | **Multicolinearidade:** O impacto negativo do Peso diminuiu. Isso ocorre porque o Horsepower (`hp`), que é correlacionado com o Peso, agora "explica" parte da redução no MPG. |
+| **P-valor do `hp`** | N/A | $0.00145$ | **Significância:** O Horsepower é um preditor estatisticamente significativo de MPG, mesmo **após** a influência do Peso ter sido contabilizada. |
+
+### Conclusão da Comparação
+
+O modelo de Regressão Múltipla é **estatisticamente superior** ao modelo simples. Ele não só fornece um ajuste superior (maior R-quadrado Ajustado e menor Erro Residual), mas também oferece uma **interpretação mais precisa** do efeito isolado de cada *feature* no consumo de combustível (o princípio *ceteris paribus*).
+
+## 📐 Análise de Forma Funcional: Linear vs. Polinomial
+
+Esta seção compara o modelo Polinomial de 2º Grau (`mpg ~ hp + hp^2`) com o modelo de Regressão Múltipla que foi o melhor ajuste linear (`mpg ~ wt + hp`), a fim de determinar a melhor forma de modelar a relação.
+
+### Comparativo de Desempenho (R-quadrado Ajustado e Erro)
+
+| Métrica | Polinomial ($\text{hp} + \text{hp}^2$) | Múltipla ($\text{wt} + \text{hp}$) | Comparação/Conclusão |
+| :--- | :--- | :--- | :--- |
+| **R-quadrado Ajustado** | 0.7393 | **0.8148** | **Melhor Ajuste:** O modelo Múltiplo explica significativamente mais variância. |
+| **RSE (Erro Residual)** | 3.077 | **2.593** | **Maior Precisão:** O modelo Múltiplo tem um erro de previsão consideravelmente menor. |
+| **P-valor do $\text{I(hp}^2)$** | $\mathbf{0.000189}$ | N/A | **Validade da Curvatura:** A significância estatística confirma que a relação **não é linear**, embora a forma curvilínea não seja a que melhor prediz o alvo. |
+
+### Conclusão sobre a Modelagem
+
+1.  **A Relação é Não-Linear:** O termo $\text{I(hp}^2)$ ser estatisticamente significativo prova que a relação entre $\text{HP}$ e $\text{MPG}$ tem uma **curvatura**.
+2.  **O Melhor Modelo é Múltiplo:** Apesar de a forma ser curva, a inclusão de um segundo *feature* linear ($\text{wt}$) no modelo **Múltiplo** resultou no **melhor ajuste geral** (maior $\text{R-quadrado Ajustado}$ e menor $\text{RSE}$).
+3.  **Implicação:** Para o *dataset* `mtcars`, a **combinação de features independentes** ($\text{wt}$ e $\text{hp}$) é mais eficaz para reduzir o erro de previsão do que a tentativa de modelar a curvatura de um único *feature* ($\text{hp}$).
+
+---
 
 ## 🏷️ Modelos para Problemas de Classificação (Predição de Classes/Categorias)
 
