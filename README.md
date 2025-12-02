@@ -58,6 +58,66 @@ Esta seção compara o modelo Polinomial de 2º Grau (`mpg ~ hp + hp^2`) com o m
 3.  **Implicação:** Para o *dataset* `mtcars`, a **combinação de features independentes** ($\text{wt}$ e $\text{hp}$) é mais eficaz para reduzir o erro de previsão do que a tentativa de modelar a curvatura de um único *feature* ($\text{hp}$).
 
 ---
+## ⚖️ Comparação da Regularização: Ridge (L2) vs. Lasso (L1)
+
+Os modelos de regularização são cruciais para prevenir o *overfitting* em modelos lineares. Eles adicionam uma penalidade aos coeficientes ($\beta$) para mantê-los estáveis, utilizando a **Validação Cruzada (CV)** para encontrar o nível ideal dessa penalidade ($\lambda$).
+
+| Característica | Regressão Ridge (Penalidade L2) | Regressão Lasso (Penalidade L1) |
+| :--- | :--- | :--- |
+| **Penalidade** | $\lambda \sum \beta_i^2$ (Soma dos Quadrados) | $\lambda \sum |\beta_i|$ (Soma dos Valores Absolutos) |
+| **Efeito nos Coeficientes** | Encolhe os coeficientes em direção a zero, mas **nunca os zera**. | Pode forçar coeficientes irrelevantes a serem **exatamente zero** (Seleção de Features). |
+
+### 🛠️ Análise dos Coeficientes e Lambda Ideal ($\lambda_{\min}$)
+
+A tabela compara os coeficientes no $\lambda$ que minimizou o erro para cada modelo.
+
+| Feature | Coeficiente Ridge (L2) $\lambda=0.661$ | Coeficiente Lasso (L1) $\lambda=0.005$ | Observação |
+| :--- | :--- | :--- | :--- |
+| (Intercept) | $28.5312$ | $10.8383$ | O Lasso tende a penalizar o Intercepto mais agressivamente. |
+| **nox** | $\mathbf{-12.8894}$ | $\mathbf{-9.0319}$ | O Ridge (L2) mantém um peso maior neste feature, distribuindo a penalidade de forma mais suave. |
+| **rm** | $\mathbf{4.3723}$ | $\mathbf{6.3066}$ | O Lasso (L1) mantém um peso significativamente maior para este feature, concentrando o poder preditivo no `rm` (número de quartos). |
+| **age** | $-0.0036$ | $-0.0265$ | Ambos os modelos reduziram a importância de `age`. |
+| **indus** | $-0.0412$ | $0.0202$ | Os sinais opostos indicam como a penalidade lida com a multicolinearidade de maneira distinta. |
+
+**Valores Ótimos de Penalidade ($\lambda_{\min}$):**
+* **Ridge (L2):** $\mathbf{0.6614818}$
+* **Lasso (L1):** $\mathbf{0.005975135}$
+
+### Conclusões sobre a Regularização
+
+1.  **Comportamento do Ridge (L2):**
+    * O $\lambda_{\min}$ encontrado demonstra que o modelo Ridge precisa de uma penalidade moderada (0.66) para estabilidade.
+    * Como esperado, **nenhum coeficiente foi zerado**, apenas encolhido. O Ridge é o preferido quando todos os *features* são considerados importantes.
+
+2.  **Comportamento do Lasso (L1):**
+    * O $\lambda_{\min}$ é muito baixo (0.005), o que significa que o erro do modelo é minimizado com uma penalidade muito fraca, e por isso, **nenhum *feature* foi anulado**.
+    * O Lasso é preferível quando se busca explicitamente a seleção de *features* ou quando o erro de previsão é menor (menor RMSE) em comparação com o Ridge.
+
+## 🕸️ Análise Final: Elastic Net (Otimização de Alpha e Lambda)
+
+O Elastic Net combina as penalidades Ridge ($L_2$) e Lasso ($L_1$), otimizando dois hiperparâmetros: $\lambda$ (força da penalidade) e $\alpha$ (mistura entre $L_1$ e $L_2$).
+
+### 🛠️ Parâmetros Otimizados pelo `caret`
+
+| Hiperparâmetro | Valor Ótimo | Função | Interpretação |
+| :--- | :--- | :--- | :--- |
+| **Melhor $\alpha$** | $\mathbf{0.1111}$ | $\alpha \in [0, 1]$. Onde 0 é Ridge puro, e 1 é Lasso puro. | **Predominância Ridge:** O $\alpha$ ótimo é muito próximo de zero. Isso significa que o modelo que obteve o melhor desempenho utiliza uma penalidade **majoritariamente Ridge (L2)**, com apenas uma leve contribuição do Lasso (L1). |
+| **Melhor $\lambda$** | $\mathbf{0.2154}$ | Força total da penalidade aplicada. | O modelo encontrou o ponto de equilíbrio de regularização que minimiza o erro. |
+
+### 🎯 Desempenho Final (RMSE)
+
+| Modelo | Penalidade Aplicada | RMSE Típico (Conjunto de Teste) |
+| :--- | :--- | :--- |
+| **Elastic Net (Optimal)** | $\mathbf{\alpha \approx 0.11}$ ($\text{L}_2$ dominante) | **5.179** |
+| Lasso (L1 Puro) | $\alpha = 1$ | $\approx 6.357$ |
+| Regressão Múltipla (OLS) | $\lambda = 0$ | $\approx 5.5$ (sem regularização) |
+
+### Conclusão Global da Regressão
+
+1.  **Modelo Ideal:** O **Elastic Net** foi o modelo de melhor desempenho (menor RMSE) entre os modelos lineares testados.
+2.  **Estratégia Vencedora:** O sucesso do Elastic Net reside na sua capacidade de escolher a melhor estratégia de penalização. O baixo valor de $\alpha$ indica que a melhor abordagem foi **priorizar a estabilidade** e o **encolhimento dos coeficientes (L2)** sobre a seleção agressiva de *features* (L1).
+3.  **Implicação:** Para o *dataset* `Boston Housing`, a regularização é necessária para reduzir o *overfitting* (melhora em relação ao OLS simples), e a forma ideal de fazê-lo é através da **penalidade Ridge (L2)**.
+---
 
 ## 🏷️ Modelos para Problemas de Classificação (Predição de Classes/Categorias)
 
