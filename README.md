@@ -300,3 +300,45 @@ O modelo Random Forest (RF) foi treinado e otimizado para o parâmetro **mtry** 
 | **Especificidade** | $0.5432$ |
 
 **Conclusão:** O Random Forest apresentou um desempenho sólido, mas foi **superado em AUC** pelos modelos probabilísticos de *baseline* (RegLog Otimizado $\sim 0.84$). O modelo se comporta de forma desequilibrada, com alto Recall ($0.83$) e baixa Especificidade ($0.54$), sugerindo que a agregação de árvores não foi suficiente para encontrar fronteiras de decisão não-lineares mais eficazes do que as fronteiras lineares simples.
+
+---
+### 🚀 Resultados do Modelo Gradient Boosting Machines (GBM)
+
+O GBM foi otimizado para os hiperparâmetros de taxa de aprendizado (**shrinkage**), número de árvores (**n.trees**) e profundidade (**interaction.depth**).
+
+| Métrica | Valor Ótimo (CV) |
+| :--- | :--- |
+| **ROC (AUC)** | $0.8230$ |
+| **Sensibilidade (Recall)** | $0.8857$ |
+| **Especificidade** | $0.5141$ |
+
+**Conclusão:** O GBM alcançou um AUC respeitável ($0.8230$), superando o Random Forest. Contudo, ele **não conseguiu superar o desempenho discriminatório da Regressão Logística Otimizada** ($\sim 0.84$). O modelo ótimo utilizou poucas árvores (50) e uma taxa de aprendizado alta (0.1), mantendo o padrão de alto Recall e baixa Especificidade, comum em modelos não ajustados neste *dataset*.
+
+---
+
+## VI. Conclusão Geral e Seleção do Modelo
+
+Após treinar e otimizar sete diferentes modelos de classificação em três categorias distintas (Probabilística, Margem/Distância e Ensemble), a performance foi avaliada prioritariamente pelo **ROC (AUC)** (poder discriminatório) e pela **Acurácia Balanceada** (equilíbrio prático).
+
+### 🏆 Tabela Comparativa Consolidada dos Modelos
+
+A tabela abaixo resume o desempenho dos modelos no *pipeline* de Validação Cruzada (CV) e, quando ajustados, no Conjunto de Teste.
+
+| Modelo | Categoria | ROC (AUC) Média CV | Sensibilidade (Recall) | Especificidade | Balanced Accuracy (Teste) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Regressão Logística Otimizada** | Probabilística | $\mathbf{0.8396}$ | $0.7857$ | $\mathbf{0.7058}$ | $\sim 0.745$ (Estimado) |
+| **LDA** | Probabilística | $0.8373$ | $\mathbf{0.8800}$ | $0.5469$ | N/A |
+| **GBM** | Ensemble | $0.8230$ | $0.8857$ | $0.5141$ | N/A |
+| **SVM (RBF)** | Margem | $0.8101$ | $0.8647$ | $0.5737$ | N/A |
+| **Random Forest** | Ensemble | $0.7991$ | $0.8343$ | $0.5432$ | N/A |
+| **KNN Otimizado** | Distância | $0.8030$ | $0.8375$ (Teste) | $0.7133$ (Teste) | $\mathbf{0.7754}$ |
+| **Árvore de Decisão (RPART)** | Árvore | $0.7408$ | $0.8029$ | $0.5604$ | N/A |
+
+### Decisão Final
+
+1.  **Melhor Poder Discriminatório (AUC):** A **Regressão Logística Otimizada** venceu na capacidade de separar as classes no *cross-validation* (AUC de $\mathbf{0.8396}$).
+2.  **Melhor Modelo Prático (Equilíbrio):** O **KNN Otimizado** (ajustado por *threshold*) demonstrou o **melhor equilíbrio** e robustez no conjunto de teste, alcançando a maior Acurácia Balanceada ($\mathbf{0.7754}$). Ele conseguiu manter um alto Recall ($0.8375$) com uma Especificidade forte ($0.7133$).
+
+**Modelo Recomendado:**
+
+Embora a Regressão Logística Otimizada forneça o *baseline* de AUC mais alto, o modelo **KNN Otimizado** é o **melhor preditor prático** para este problema, pois sua capacidade de ajuste de *threshold* o torna mais eficiente na mitigação de Falsos Positivos, enquanto ainda mantém um Recall excelente.
