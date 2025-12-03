@@ -136,7 +136,7 @@ O objetivo principal é prever uma variável de saída **categórica** ou **disc
 
 ### 🎯 Regressão Logística 
 
-Ao verificar o balanceamento do conjunto de dados, percebeu-se um desbalancemaneto entre Nao_Diabetes e Diabetes. Optou-se por aplicar estratégia de balancemento para mitigar o problema
+Ao verificar o balanceamento do conjunto de dados, percebeu-se um desbalancemaneto entre Nao_Diabete e Diabete. Optou-se por aplicar estratégia de balancemento para mitigar o problema
 
 ### ⚖️ Estratégia de Mitigação de Desbalanceamento (Custo)
 
