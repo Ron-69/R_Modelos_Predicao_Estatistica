@@ -253,3 +253,24 @@ O modelo KNN (K-Vizinhos Mais Próximos) foi treinado e otimizado para o parâme
 | **Especificidade** | $0.4058$ |
 
 **Conclusão:** O KNN obteve o **maior Recall** ($\mathbf{0.9381}$) de todos os modelos testados até agora, sendo o mais eficaz em identificar corretamente os casos positivos de diabetes. No entanto, o seu AUC ($\mathbf{0.8030}$) é o mais baixo, e a **Especificidade é extremamente baixa** ($0.4058$). Este modelo é o menos equilibrado, favorecendo o Recall ao ponto de gerar uma taxa muito alta de **Falsos Positivos** (classificando pacientes saudáveis como diabéticos), o que o torna impraticável sem um ajuste rigoroso de *threshold*.
+
+### Otimização do KNN por aumento do Threshold(Limite)
+
+### 🏘️ Resultados do Modelo K-Nearest Neighbors (KNN) - Otimizado por Threshold
+
+O modelo KNN ($k=33$) apresentava um Recall altíssimo (0.9381) mas uma Especificidade péssima (0.4058). Foi aplicado um **ajuste de *Threshold*** (limite de decisão) para equilibrar o desempenho e maximizar a Sensibilidade e a Especificidade.
+
+#### Matriz de Confusão (Threshold Otimizado - Conjunto de Teste)
+
+#### Métricas de Desempenho
+
+| Métrica | Valor (Teste) | Análise / Conclusão |
+| :--- | :--- | :--- |
+| **Acurácia** | $0.7565$ | Melhora notável sobre os modelos probabilísticos. |
+| **Recall (Diabete)** | $\mathbf{0.8375}$ | O Recall permanece alto ($83.75\%$), com uma queda controlada. |
+| **Especificidade** | $\mathbf{0.7133}$ | A Especificidade melhorou dramaticamente, ficando no nível do RegLog Otimizado. |
+| **Balanced Accuracy** | $\mathbf{0.7754}$ | **Melhor modelo até agora** em termos de equilíbrio entre classes. |
+
+**Conclusão Final do KNN:** O ajuste de *threshold* permitiu que o modelo KNN se tornasse o **modelo de melhor desempenho balanceado** até o momento, comprovando que seu alto poder discriminatório (Curva ROC) pode ser traduzido em métricas de classificação úteis com a escolha correta do limite de decisão.
+
+---
