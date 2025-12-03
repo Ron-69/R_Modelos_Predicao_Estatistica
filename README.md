@@ -286,3 +286,17 @@ O modelo Árvore de Decisão (RPART) foi treinado e otimizado para o parâmetro 
 | **Especificidade** | $0.5604$ |
 
 **Conclusão:** A Árvore de Decisão teve o **pior poder discriminatório (AUC)** entre todos os modelos testados ($\mathbf{0.7408}$). O modelo escolhido foi o menos podado ($\mathbf{cp = 0}$), indicando que a estrutura simples de regras de decisão não é adequada para capturar as nuances do *dataset*. Seu desempenho é significativamente inferior aos modelos probabilísticos (RegLog, LDA) e baseados em distância (KNN).
+
+---
+
+### 🌲 Resultados do Modelo Random Forest (RF)
+
+O modelo Random Forest (RF) foi treinado e otimizado para o parâmetro **mtry** (número de preditores amostrados em cada divisão).
+
+| Métrica | Valor Ótimo (CV) |
+| :--- | :--- |
+| **ROC (AUC)** | $0.7991$ |
+| **Sensibilidade (Recall)** | $0.8343$ |
+| **Especificidade** | $0.5432$ |
+
+**Conclusão:** O Random Forest apresentou um desempenho sólido, mas foi **superado em AUC** pelos modelos probabilísticos de *baseline* (RegLog Otimizado $\sim 0.84$). O modelo se comporta de forma desequilibrada, com alto Recall ($0.83$) e baixa Especificidade ($0.54$), sugerindo que a agregação de árvores não foi suficiente para encontrar fronteiras de decisão não-lineares mais eficazes do que as fronteiras lineares simples.
