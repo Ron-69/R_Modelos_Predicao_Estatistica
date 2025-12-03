@@ -239,3 +239,17 @@ O modelo SVM com Kernel de Função de Base Radial (RBF) foi treinado e otimizad
 | **Especificidade** | $0.5737$ |
 
 **Conclusão:** O SVM **não** alcançou o maior Recall ($0.8647$), sendo superado pelo Recall do modelo LDA ($\mathbf{0.8800}$). Seu AUC ($0.8101$) é ligeiramente inferior ao da Regressão Logística Otimizada ($0.8396$), e sua Especificidade ($0.5737$) é baixa. Isso o posiciona como um modelo que, assim como o LDA, favorece muito a identificação da doença (alto Recall) à custa de um alto número de **Falsos Positivos** (baixa Especificidade), indicando um limite de decisão agressivo.
+
+---
+
+### 🏘️ Resultados do Modelo K-Nearest Neighbors (KNN)
+
+O modelo KNN (K-Vizinhos Mais Próximos) foi treinado e otimizado para o parâmetro **$k$** (o número de vizinhos).
+
+| Métrica | Valor Ótimo (CV) |
+| :--- | :--- |
+| **ROC (AUC)** | $0.8030$ |
+| **Sensibilidade (Recall)** | $\mathbf{0.9381}$ |
+| **Especificidade** | $0.4058$ |
+
+**Conclusão:** O KNN obteve o **maior Recall** ($\mathbf{0.9381}$) de todos os modelos testados até agora, sendo o mais eficaz em identificar corretamente os casos positivos de diabetes. No entanto, o seu AUC ($\mathbf{0.8030}$) é o mais baixo, e a **Especificidade é extremamente baixa** ($0.4058$). Este modelo é o menos equilibrado, favorecendo o Recall ao ponto de gerar uma taxa muito alta de **Falsos Positivos** (classificando pacientes saudáveis como diabéticos), o que o torna impraticável sem um ajuste rigoroso de *threshold*.
