@@ -159,6 +159,17 @@ O dataset `PimaIndiansDiabetes` apresentou um **desbalanceamento de 65% (Nao_Dia
 
 O modelo otimizado foi avaliado em um conjunto de dados de Teste (não visto) para confirmar sua capacidade de generalização.
 
+### 💾 Persistência de Objetos (Reprodutibilidade)
+
+Para garantir que o particionamento dos dados de treino e teste, as configurações de Validação Cruzada (`control`) e os modelos treinados (como o `logreg_otimizado`) possam ser reutilizados em diferentes notebooks e sessões R, utilizamos as funções de serialização de dados:
+
+* **`saveRDS(objeto, file = "caminho/nome.rds")`**: É a função preferida para salvar **um único objeto** (como um modelo ou a configuração `control`). O arquivo `.rds` resultante é carregado usando `readRDS()`, o que garante um controle explícito sobre qual objeto está sendo injetado na sessão.
+* **`save(obj1, obj2, file = "caminho/nome.RData")`**: Usada para salvar **múltiplos objetos** simultaneamente (como `train_df` e `test_df`). O arquivo `.RData` é carregado com a função `load()`, que injeta todos os objetos salvos diretamente no ambiente de trabalho.
+
+O uso dessas funções assegura que todas as análises comparativas usem exatamente os mesmos *splits* de dados.
+
+---
+
 #### Matriz de Confusão
 
 O resultado da Matriz de Confusão no Conjunto de Teste (70/30) é:
@@ -214,3 +225,17 @@ Foram comparados três modelos baseados em probabilidade para estabelecer o melh
 
 **Conclusão da Categoria Probabilística:**
 A **Regressão Logística Otimizada** é escolhida como o modelo de *baseline* mais robusto. Embora o LDA tenha o maior Recall, o RegLog Otimizado oferece o **melhor equilíbrio** entre as métricas, mantendo um alto poder discriminatório (AUC) e uma Especificidade aceitável ($\mathbf{0.7058}$).
+
+### Support Vector Machines (SVM)
+
+### 🛡️ Resultados do Modelo Support Vector Machines (SVM)
+
+O modelo SVM com Kernel de Função de Base Radial (RBF) foi treinado e otimizado para o parâmetro de custo (**$C$**).
+
+| Métrica | Valor Ótimo (CV) |
+| :--- | :--- |
+| **ROC (AUC)** | $0.8101$ |
+| **Sensibilidade (Recall)** | $\mathbf{0.8647}$ |
+| **Especificidade** | $0.5737$ |
+
+**Conclusão:** O SVM **não** alcançou o maior Recall ($0.8647$), sendo superado pelo Recall do modelo LDA ($\mathbf{0.8800}$). Seu AUC ($0.8101$) é ligeiramente inferior ao da Regressão Logística Otimizada ($0.8396$), e sua Especificidade ($0.5737$) é baixa. Isso o posiciona como um modelo que, assim como o LDA, favorece muito a identificação da doença (alto Recall) à custa de um alto número de **Falsos Positivos** (baixa Especificidade), indicando um limite de decisão agressivo.
