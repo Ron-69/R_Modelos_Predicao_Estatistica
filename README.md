@@ -274,3 +274,15 @@ O modelo KNN ($k=33$) apresentava um Recall altíssimo (0.9381) mas uma Especifi
 **Conclusão Final do KNN:** O ajuste de *threshold* permitiu que o modelo KNN se tornasse o **modelo de melhor desempenho balanceado** até o momento, comprovando que seu alto poder discriminatório (Curva ROC) pode ser traduzido em métricas de classificação úteis com a escolha correta do limite de decisão.
 
 ---
+
+### 🌳 Resultados do Modelo Árvore de Decisão (RPART)
+
+O modelo Árvore de Decisão (RPART) foi treinado e otimizado para o parâmetro de complexidade **$cp$**.
+
+| Métrica | Valor Ótimo (CV) |
+| :--- | :--- |
+| **ROC (AUC)** | $0.7408$ |
+| **Sensibilidade (Recall)** | $0.8029$ |
+| **Especificidade** | $0.5604$ |
+
+**Conclusão:** A Árvore de Decisão teve o **pior poder discriminatório (AUC)** entre todos os modelos testados ($\mathbf{0.7408}$). O modelo escolhido foi o menos podado ($\mathbf{cp = 0}$), indicando que a estrutura simples de regras de decisão não é adequada para capturar as nuances do *dataset*. Seu desempenho é significativamente inferior aos modelos probabilísticos (RegLog, LDA) e baseados em distância (KNN).
