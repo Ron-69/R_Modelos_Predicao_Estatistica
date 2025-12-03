@@ -134,6 +134,10 @@ O objetivo principal é prever uma variável de saída **categórica** ou **disc
 | **Ensemble** | **Random Forest (Classificação)** | Votação de múltiplas Árvores de Decisão para a classificação final. |
 | **Ensemble** | **Gradient Boosting Machines (GBM)** | Constrói preditores sequencialmente para alta precisão. |
 
+### 🎯 Regressão Logística 
+
+Ao verificar o balanceamento do conjunto de dados, percebeu-se um desbalancemaneto entre Nao_Diabetes e Diabetes. Optou-se por aplicar estratégia de balancemento para mitigar o problema
+
 ### ⚖️ Estratégia de Mitigação de Desbalanceamento (Custo)
 
 O dataset `PimaIndiansDiabetes` apresentou um **desbalanceamento de 65% (Nao_Diabete) vs. 35% (Diabete)**. Para garantir que o modelo não ignorasse a classe minoritária crítica (`Diabete`), o treinamento da Regressão Logística foi realizado em duas etapas de comparação:
@@ -153,8 +157,6 @@ O dataset `PimaIndiansDiabetes` apresentou um **desbalanceamento de 65% (Nao_Dia
 
 ---
 
-### 🎯 Resultados Finais: Regressão Logística Otimizada (Conjunto de Teste)
-
 O modelo otimizado foi avaliado em um conjunto de dados de Teste (não visto) para confirmar sua capacidade de generalização.
 
 #### Matriz de Confusão
@@ -173,3 +175,42 @@ O resultado da Matriz de Confusão no Conjunto de Teste (70/30) é:
 | **Balanced Accuracy** | $\mathbf{0.7375}$ | A acurácia ajustada para o desbalanceamento das classes. |
 
 **Conclusão da Avaliação:** O modelo final apresenta um bom equilíbrio de desempenho ($\text{AUC} > 0.80$) e conseguiu identificar quase **$78\%$** dos casos reais de diabetes (Recall da classe minoritária), sendo um excelente *baseline* para a comparação com os próximos modelos (KNN, SVM, etc.).
+
+---
+
+### 🎯 Naive_Bayes
+
+O Naive Bayes (NB) foi treinado com padronização e otimizado usando Validação Cruzada (CV) repetida. O modelo escolhido foi o **`usekernel = TRUE`**, que apresentou o melhor desempenho de AUC.
+
+| Métrica | Valor Ótimo (CV) |
+| :--- | :--- |
+| **ROC (AUC)** | $\mathbf{0.8301}$ |
+| **Sensibilidade (Recall)** | $0.8467$ |
+| **Especificidade** | $0.5794$ |
+
+---
+
+### 🧠 Linear Discriminant Analysis (LDA)
+
+O modelo LDA (Linear Discriminant Analysis) não possui hiperparâmetros de *tuning* e foi ajustado diretamente no *dataset* padronizado.
+
+| Métrica | Valor Ótimo (CV) |
+| :--- | :--- |
+| **ROC (AUC)** | $0.8373$ |
+| **Sensibilidade (Recall)** | $\mathbf{0.8800}$ |
+| **Especificidade** | $0.5469$ |
+
+## Comparação da Categoria Probabilística
+
+Foram comparados três modelos baseados em probabilidade para estabelecer o melhor *baseline* para modelos mais complexos.
+
+#### Comparativo de Métricas (Validação Cruzada)
+
+| Métrica (Média CV) | RegLog\_Opt | Naive\_Bayes | LDA | Análise |
+| :--- | :--- | :--- | :--- | :--- |
+| **ROC (AUC)** | $\mathbf{0.8396}$ | $0.8396$ | $0.8373$ | O poder de separação das classes é similar entre os três. |
+| **Sensibilidade (Recall)** | $0.7857$ | $0.7857$ | $\mathbf{0.8800}$ | O **LDA** demonstrou a melhor capacidade de minimização de Falsos Negativos (Maior Recall). |
+| **Especificidade** | $\mathbf{0.7058}$ | $0.7058$ | $0.5469$ | O **LDA** possui o maior viés de Falso Positivo, tornando-o menos prático. |
+
+**Conclusão da Categoria Probabilística:**
+A **Regressão Logística Otimizada** é escolhida como o modelo de *baseline* mais robusto. Embora o LDA tenha o maior Recall, o RegLog Otimizado oferece o **melhor equilíbrio** entre as métricas, mantendo um alto poder discriminatório (AUC) e uma Especificidade aceitável ($\mathbf{0.7058}$).
